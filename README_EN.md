@@ -2,10 +2,17 @@
 
 > This plug-in has only tested the external USB code scanning gun. If other external devices are abnormal, you can raise the issue in this project
 
+### Download
+
+`npm install react-native-external-scan-gun`
+or
+`yarn add react-native-external-scan-gun`
+
+
 ### Integrated installation (Android only)
 
-  1. Open `android/app/src/main/java/[...]/MainApplication.java` 
-  - The plug-in package is introduced at the top of the file, including the code `import com.afei.scangun.ScanGunPackage;`
+  1. Open `android/app/src/main/java/[...]/MainApplication.java` , and import the plug-in package at the file. The code is' import com.afei.scangun.ScanGunPackage`
+
   2. Open `android/app/src/main/java/[...]/MainActivity.java` , and add the following code
   ```
   ...

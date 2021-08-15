@@ -2,10 +2,15 @@
 
 > 本插件仅测试过外接 USB 扫码枪，其他外接设备若不正常可以在本项目中提 issue
 
+### 下载
+
+`npm install react-native-external-scan-gun`
+或者
+`yarn add react-native-external-scan-gun`
+
 ### 集成安装(仅支持安卓)
 
-  1. 打开 `android/app/src/main/java/[...]/MainApplication.java` 文件
-  - 在文件顶部引入插件包，代码 `import com.afei.scangun.ScanGunPackage;`
+  1. 打开 `android/app/src/main/java/[...]/MainApplication.java` 文件, 并在文件顶部引入插件包，代码 `import com.afei.scangun.ScanGunPackage;`
   2. 打开 `android/app/src/main/java/[...]/MainActivity.java`  文件, 并添加如下代码
   ```
   ...
