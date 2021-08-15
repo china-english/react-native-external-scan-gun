@@ -24,7 +24,7 @@
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getKeyCode() != KeyEvent.KEYCODE_BACK) {
+        if (event.getKeyCode() != KeyEvent.KEYCODE_BACK && event.getDeviceId() != -1) {
             ScanGunManager.getInstance().analysisKeyEvent(event);
             return true;
         }
