@@ -4848,10 +4848,10 @@ react-is@^17.0.1:
   resolved "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
-react-native-external-scan-gun@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/react-native-external-scan-gun/-/react-native-external-scan-gun-1.0.1.tgz#a88a30ad04818c0a744fe431526e8545e3cdeea7"
-  integrity sha512-GG3dJdFdZNLwpFKfXPii9TJWP/sKUAFlvzRsV9+0OzR5qFOy5sZuBWx1w0LzLOqMRQxTIW1JrM0s2OVNEfid2A==
+react-native-external-scan-gun@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/react-native-external-scan-gun/-/react-native-external-scan-gun-2.0.0.tgz#73da03b218fedec54b6e3485cabd697b67a6b9d3"
+  integrity sha512-GaHjPRNnJjwcDSLHbb0bRAQsttkKZHPtKU7rfZiitR4v0Pt+BcWa5psxtrBAO6fOZJ80Ke96aV7ZFJxij8XVLg==
 
 react-native-gesture-handler@~1.10.2:
   version "1.10.3"

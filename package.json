@@ -1,6 +1,6 @@
 {
   "name": "react-native-external-scan-gun",
-  "version": "1.0.4",
+  "version": "2.0.0",
   "description": "基于 react-native 开发的安卓系统外接设备插件",
   "main": "index.js",
   "keywords": [

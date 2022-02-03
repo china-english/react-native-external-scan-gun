@@ -12,22 +12,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ScanGunModule extends ReactContextBaseJavaModule {
-
   private final ReactApplicationContext reactContext;
-  private static final String onScanCodeRecevieData  = "onScanCodeRecevieData";
-
+  private static final String onScanCodeReceiveData  = "onScanCodeReceiveData";
 
   public ScanGunModule(ReactApplicationContext reactContext) {
-
     super(reactContext);
     this.reactContext = reactContext;
     ScanGunManager.getInstance().setReceiveCallback(new ScanCodeCallback() {
       @Override
       public void onScanCode(String value) {
-        ScanGunModule.this.reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(onScanCodeRecevieData,value);
+        ScanGunModule.this.reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(onScanCodeReceiveData,value);
       }
     });
-
   }
 
   @Override
@@ -44,8 +40,7 @@ public class ScanGunModule extends ReactContextBaseJavaModule {
   @Override
   public Map<String, Object> getConstants() {
     final Map<String, Object> constants = new HashMap<>();
-    constants.put("onScanCodeRecevieData", onScanCodeRecevieData);
+    constants.put("onScanCodeReceiveData", onScanCodeReceiveData);
     return constants;
   }
-
 }

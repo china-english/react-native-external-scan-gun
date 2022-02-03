@@ -11,7 +11,7 @@ export default function App() {
   useEffect(() => {
     const eventEmitter = new NativeEventEmitter(NativeModules.ToastExample);
     const eventListener = eventEmitter.addListener(
-      scanGun.onScanCodeRecevieData,
+      scanGun.onScanCodeReceiveData,
       code => {
         setScanCode(code);
       },
@@ -22,9 +22,9 @@ export default function App() {
   }, []);
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>本次扫码结果为:</Text>
-      <Text style={styles.codeText}>{scanCode}</Text>
       <StatusBar style="auto" />
+      <Text style={styles.label}>本次扫码结果为:</Text>
+      <Text android_hyphenationFrequency="full" style={styles.codeText}>{scanCode}</Text>
     </View>
   );
 }
@@ -42,6 +42,6 @@ const styles = StyleSheet.create({
   },
   codeText: {
     fontWeight: 'bold',
-    color: '#108EE9'
+    color: '#108EE9',
   }
 });

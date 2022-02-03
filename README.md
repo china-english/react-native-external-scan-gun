@@ -44,7 +44,7 @@ import scanGun from 'react-native-external-scan-gun';
     useEffect(() => {
       const eventEmitter = new NativeEventEmitter(NativeModules.ToastExample);
       const eventListener = eventEmitter.addListener(
-        scanGun.onScanCodeRecevieData,
+        scanGun.onScanCodeReceiveData,
         code => {
           // TODO: 扫码之后的回调
         },

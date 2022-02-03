@@ -7,8 +7,7 @@ import static android.content.ContentValues.TAG;
 public class ScanGunManager {
 
     private final static long MESSAGE_DELAY = 500; // 延迟500ms，判断扫码是否完成。
-    private StringBuffer mStringBufferResult; // 扫码内容
-    private boolean mCaps; // 大小写区分
+    private StringBuffer stringBufferResult; // 扫码内容
 
     private ScanCodeCallback scanCodeCallback;
 
@@ -16,136 +15,133 @@ public class ScanGunManager {
         void onScanCode(String value);
     }
 
-
     // 类初始化时，不初始化这个对象(延时加载，真正用的时候再创建)
     private static ScanGunManager instance;
 
     // 构造器私有化
     private ScanGunManager(){}
 
-    // 方法同步，调用效率低
+    // 限制线程同时访问 jvm 中该类的所有实例同时访问对应的代码块
     public static synchronized ScanGunManager getInstance(){
-        if(instance==null){
+        if (instance == null) {
             instance=new ScanGunManager();
-            instance.mStringBufferResult = new StringBuffer();
+            instance.stringBufferResult = new StringBuffer();
         }
         return instance;
     }
-
 
     public void setReceiveCallback(ScanCodeCallback scanCodeCallback) {
         this.scanCodeCallback = scanCodeCallback;
     }
 
     public void clearScanBarCodeText(){
-        if (mStringBufferResult!= null){
-            mStringBufferResult.delete(0,mStringBufferResult.length());
+        if (stringBufferResult != null){
+            stringBufferResult.delete(0, stringBufferResult.length());
         }
     }
 
     // 外设事件解析
     public void analysisKeyEvent(KeyEvent event) {
         int keyCode = event.getKeyCode();
-        String devicesName = event.getDevice().getName();
-        Log.d(TAG, "设备名称:" + devicesName);
-        // 字母大小写判断
-        checkLetterStatus(event);
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            char aChar = getInputCode(event);;
-            if (aChar != 0) {
-                if (mStringBufferResult!=null){
-                    mStringBufferResult.append(aChar);
-                }
-            }
+        boolean isShiftPressed = event.isShiftPressed();
+        // 对按下的键进行操作,过滤 shift
+        if (
+            event.getAction() == KeyEvent.ACTION_DOWN
+            && keyCode != KeyEvent.META_SHIFT_ON
+            && keyCode != KeyEvent.KEYCODE_SHIFT_LEFT
+            && keyCode != KeyEvent.KEYCODE_SHIFT_RIGHT
+        ) {
             if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                String barCode = mStringBufferResult.toString();
+                // 输入结束,返回字符串
+                String barCode = stringBufferResult.toString();
                 if (scanCodeCallback != null) {
                     scanCodeCallback.onScanCode(barCode);
                 }
-                mStringBufferResult.delete(0,mStringBufferResult.length());
+                stringBufferResult.delete(0, stringBufferResult.length());
+            } else {
+                // 处理输入的字符串
+                Log.d(TAG, "event:" + event + "\nkeyCode:" + event.getKeyCode() + "\nisShiftPressed:" + event.isShiftPressed());
+                char inputCode = getInputCode(keyCode, isShiftPressed);;
+                if (inputCode != 0) {
+                    if (stringBufferResult != null){
+                        stringBufferResult.append(inputCode);
+                    }
+                }
             }
         }
     }
 
-    //检查shift键
-    private void checkLetterStatus(KeyEvent event) {
-        int keyCode = event.getKeyCode();
-        if (keyCode == KeyEvent.KEYCODE_SHIFT_RIGHT || keyCode == KeyEvent.KEYCODE_SHIFT_LEFT) {
-            mCaps = event.getAction() == KeyEvent.ACTION_DOWN;
-        }
-    }
-
-
     //获取扫描内容
-    private char getInputCode(KeyEvent event) {
-        int keyCode = event.getKeyCode();
-        char aChar;
+    private char getInputCode(int keyCode, boolean isShiftPressed) {
+        char inputCode;
 
         if (keyCode >= KeyEvent.KEYCODE_A && keyCode <= KeyEvent.KEYCODE_Z) {
-            //字母
-            aChar = (char) ((mCaps ? 'A' : 'a') + keyCode - KeyEvent.KEYCODE_A);
-        } else if (keyCode >= KeyEvent.KEYCODE_0 && keyCode <= KeyEvent.KEYCODE_9) {
-            //数字
-            aChar = (char) ('0' + keyCode - KeyEvent.KEYCODE_0);
+            // 大小写字母
+            inputCode = (char) ((isShiftPressed ? 'A' : 'a') + keyCode - KeyEvent.KEYCODE_A);
         } else {
-            //其他符号
-            aChar = keyValue(mCaps, keyCode);
+            // 数字及其他符号(限英文字符)
+            inputCode = keyValue(keyCode, isShiftPressed);
         }
-        return aChar;
+        Log.d(TAG, "result keyCode:" + inputCode + "keyCode=" +keyCode);
+
+        return inputCode;
     }
 
     /**
      * 按键对应的char表
      */
-    private char keyValue(boolean caps, int keyCode) {
+    private char keyValue(int keyCode, boolean isShiftPressed) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_0:
-                return caps ? ')' : '0';
+                return isShiftPressed ? ')' : '0';
             case KeyEvent.KEYCODE_1:
-                return caps ? '!' : '1';
+                return isShiftPressed ? '!' : '1';
             case KeyEvent.KEYCODE_2:
-                return caps ? '@' : '2';
+                return isShiftPressed ? '@' : '2';
             case KeyEvent.KEYCODE_3:
-                return caps ? '#' : '3';
+                return isShiftPressed ? '#' : '3';
             case KeyEvent.KEYCODE_4:
-                return caps ? '$' : '4';
+                return isShiftPressed ? '$' : '4';
             case KeyEvent.KEYCODE_5:
-                return caps ? '%' : '5';
+                return isShiftPressed ? '%' : '5';
             case KeyEvent.KEYCODE_6:
-                return caps ? '^' : '6';
+                return isShiftPressed ? '^' : '6';
             case KeyEvent.KEYCODE_7:
-                return caps ? '&' : '7';
+                return isShiftPressed ? '&' : '7';
             case KeyEvent.KEYCODE_8:
-                return caps ? '*' : '8';
+                return isShiftPressed ? '*' : '8';
             case KeyEvent.KEYCODE_9:
-                return caps ? '(' : '9';
+                return isShiftPressed ? '(' : '9';
             case KeyEvent.KEYCODE_NUMPAD_SUBTRACT:
-                return '-';
+                return isShiftPressed ? '_' : '-';
             case KeyEvent.KEYCODE_MINUS:
-                return '_';
+                return isShiftPressed ? '_' : '-';
             case KeyEvent.KEYCODE_EQUALS:
-                return '=';
+                return isShiftPressed ? '+' : '=';
             case KeyEvent.KEYCODE_NUMPAD_ADD:
-                return '+';
+                return isShiftPressed ? '+' : '=';
             case KeyEvent.KEYCODE_GRAVE:
-                return caps ? '~' : '`';
+                return isShiftPressed ? '~' : '`';
             case KeyEvent.KEYCODE_BACKSLASH:
-                return caps ? '|' : '\\';
+                return isShiftPressed ? '|' : '\\';
             case KeyEvent.KEYCODE_LEFT_BRACKET:
-                return caps ? '{' : '[';
+                return isShiftPressed ? '{' : '[';
             case KeyEvent.KEYCODE_RIGHT_BRACKET:
-                return caps ? '}' : ']';
+                return isShiftPressed ? '}' : ']';
             case KeyEvent.KEYCODE_SEMICOLON:
-                return caps ? ':' : ';';
+                return isShiftPressed ? ':' : ';';
             case KeyEvent.KEYCODE_APOSTROPHE:
-                return caps ? '"' : '\'';
+                return isShiftPressed ? '"' : '\'';
             case KeyEvent.KEYCODE_COMMA:
-                return caps ? '<' : ',';
+                return isShiftPressed ? '<' : ',';
             case KeyEvent.KEYCODE_PERIOD:
-                return caps ? '>' : '.';
+                return isShiftPressed ? '>' : '.';
             case KeyEvent.KEYCODE_SLASH:
-                return caps ? '?' : '/';
+                return isShiftPressed ? '?' : '/';
+            case KeyEvent.KEYCODE_SPACE:
+                return ' ';
             default:
+                Log.d(TAG, "键码为" + keyCode + "的按键未做处理或无法识别");
                 return 0;
         }
     }
